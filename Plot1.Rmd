@@ -1,0 +1,31 @@
+---
+title: "Exploratory Data Analysis W1 Project"
+author: "Po Hsuan Ho"
+date: "8/24/2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+Load and clean data
+```{r}
+setwd("C:/Users/PO HSUAN/Downloads")
+data<-read.table("household_power_consumption.txt", header=TRUE, sep=";", na.strings = "?", colClasses = c('character','character','numeric','numeric','numeric','numeric','numeric','numeric','numeric'))
+data$Date <-as.Date(data$Date, "%d/%m/%Y")
+subdata<-subset(data, Date>=as.Date("2007-2-1") & Date<=as.Date("2007-2-2"))
+subdata<-subdata[complete.cases(subdata),]
+dateTime<-paste(subdata$Date, subdata$Time)
+dateTime<-setNames(dateTime, "DateTime")
+subdata<-subdata[, !(names(subdata) %in% c("Date","Time"))]
+subdata<-cbind(dateTime,subdata)
+subdata$dateTime<-as.POSIXct(dateTime)
+```
+
+Create plot 1
+```{r}
+hist(subdata$Global_active_power, main="Global Active Power", xlab = "Global Active Power(Kilowatts)", col = "red")
+dev.copy(png,"plot1.png", width=480, height=480)
+dev.off()
+```
